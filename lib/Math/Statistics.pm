@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use utf8;
 
-use Math::Base;
+use Math;
 use Log::Minimal;
 use Time::HiRes;
 
@@ -20,11 +20,46 @@ sub new {
 
 
 sub sort {
-    my ($class, @nums) = @_;
-    
-    my $number = $#nums + 1; #count how many
-    my @sorted = sort { $a <=> $b } @Nums;	
+    my (@nums) = @_;
+    my $number = $#nums + 1;
+    my @sorted = sort { $a <=> $b } @nums;
     return @sorted;
+}
+
+sub total_sum {
+    my ($number, @nums) = @_;
+
+    my $counter = 0;
+    my $total;
+
+    while ($counter < $number)  {
+        $total = $total + $nums[$counter];
+        $counter++;
+    }
+    return $counter;
+}
+
+sub basic_metrics {
+    my (@sorted_array) = @_;
+
+    my $minimum = shift(@sorted_array);
+    my $maximum = pop(@sorted_array);
+    my $range = $maximum - $minimum;
+    my $midrange = ($minimum + $maximum) / 2;
+    $midrange = sprintf("%.1f", $midrange);
+
+    my %count;
+
+    my @unique = grep { ++$count{$_} < 2 } @sorted_array;
+    my $unique_sum = $#unique + 1;
+
+    return my $response_data = +{
+        "min"           =>  $minimum,
+        "max"           =>  $maximum,
+        "range"         =>  $range,
+        "mid range"     =>  $midrange,
+        "unique sum"    =>  $unique_sum,
+    };
 }
 
 1;
